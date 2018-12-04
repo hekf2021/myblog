@@ -1,0 +1,21 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+div.nav {
+    background-color: #eeeeee;
+    border-bottom: 1px solid #ccc;
+    padding: 10px 5px;
+}
+
+div.nav a {
+    text-decoration: none;
+    color: #000000;
+    padding: 5px 10px;
+}
+
+div.nav a.logo {
+    display: inline-block;
+    font-size: 12px;
+}
