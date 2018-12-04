@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <div>
+        <a href="{% url 'home' %}">个人博客网站</a>
+    </div>
+    <hr>
+    {% block content %}{% endblock %}
+</body>
+</html>
