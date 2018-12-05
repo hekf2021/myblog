@@ -48,8 +48,12 @@
                         </li>
 
                         {# 全部页码 #}
-                        {% for page_num in page_of_blogs.paginator.page_range %}
-                            <li><a href="?page={{ page_num }}"> {{ page_num }}</a></li>
+                        {% for page_num in page_range %}
+                            {% if page_num == page_of_blogs.number %}
+                                <li class="active"><a href="?page={{ page_num }}"> {{ page_num }}</a></li>
+                            {% else %}
+                                <li><a href="?page={{ page_num }}"> {{ page_num }}</a></li>
+                            {% endif %}
                         {% endfor %}
 
                         {# 下一页 #}
