@@ -1,6 +1,7 @@
 from django.shortcuts import render_to_response,get_list_or_404,get_object_or_404
 from .models import BlogType,Blog
 from django.core.paginator import Paginator
+from django.db.models import  Count
 # Create your views here.
 
 def blog_detail(request,blog_pk):
@@ -27,11 +28,39 @@ def get_blog_list_common_data(blog_all_list,page_num):
     page_range = list(range(max(current_page_num - 2, 1), current_page_num)) + \
                  list(range(current_page_num, min(current_page_num + 2, paginator.num_pages) + 1))
 
+
+    '''
+    统计blog_type类型数量
+    方法一：
+    blog_types = BlogType.objects.all()
+    blog_types_list = []
+    for blog_type in blog_types:
+        blog_type.blog_count = Blog.objects.filter(blog_type=blog_type).count()
+        blog_types_list.append(blog_type)
+    方法二：
+    BlogType.objects.annotate(blog_count=Count('blog'))  #统计blog_type的数量，返回给页时，blog_types是数组，里面装的对象是blog_type，另外给blog_type加了一个blog_count的属性
+    '''
+
+    '''
+    统计日期数有多少博客
+    方法一
+    blog_dates_dict = {}
+    blog_dates =Blog.objects.dates('create_time', 'month', order='DESC')
+    for blog_date in blog_dates:
+        blog_count=Blog.objects.filter(create_time__year=blog_date.year,create_time__month=blog_date.month).count()
+        blog_dates_dict[blog_date]=blog_count
+    '''
+    blog_dates_dict = {}
+    blog_dates = Blog.objects.dates('create_time', 'month', order='DESC')
+    for blog_date in blog_dates:
+        blog_count = Blog.objects.filter(create_time__year=blog_date.year, create_time__month=blog_date.month).count()
+        blog_dates_dict[blog_date] = blog_count
+
     context = {}
     context['page_of_blogs'] = page_of_blogs
     context['page_range'] = page_range
-    context['blog_types'] = BlogType.objects.all()
-    context['blog_dates'] = Blog.objects.dates('create_time', 'month', order='DESC')
+    context['blog_types'] = BlogType.objects.annotate(blog_count=Count('blog'))  #统计blog_type的数量，返回给页时，blog_types是数组，里面装的对象是blog_type，另外给blog_type加了一个blog_count的属性
+    context['blog_dates'] = blog_dates_dict
     return context
 
 
