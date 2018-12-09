@@ -7,10 +7,16 @@ from django.db.models import  Count
 def blog_detail(request,blog_pk):
     context = {}
     blog = get_object_or_404(Blog,pk=blog_pk)
+    if not request.COOKIES.get('blog_%s_readed' % blog_pk):
+        blog.read_num+=1;
+        blog.save()
+
     context['blog']=blog
     context['previous_blog']=Blog.objects.filter(create_time__gt=blog.create_time).last()
     context['next_blog']=Blog.objects.filter(create_time__lt=blog.create_time).first()
-    return render_to_response('blog/blog_detail.html', context)
+    response = render_to_response('blog/blog_detail.html', context)
+    response.set_cookie('blog_%s_readed' % blog_pk,'true');
+    return response
 
 def blog_with_type(request,blog_type_pk):
     context = {}
