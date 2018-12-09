@@ -1,5 +1,5 @@
 from django.shortcuts import render_to_response,get_list_or_404,get_object_or_404
-from .models import BlogType,Blog
+from .models import BlogType,Blog,ReadNum
 from django.core.paginator import Paginator
 from django.db.models import  Count
 # Create your views here.
@@ -8,8 +8,12 @@ def blog_detail(request,blog_pk):
     context = {}
     blog = get_object_or_404(Blog,pk=blog_pk)
     if not request.COOKIES.get('blog_%s_readed' % blog_pk):
-        blog.read_num+=1;
-        blog.save()
+        if ReadNum.objects.filter(blog=blog).count():
+           readnum = ReadNum.objects.get(blog=blog)
+        else:
+          readnum = ReadNum(blog=blog)
+        readnum.read_num += 1
+        readnum.save()
 
     context['blog']=blog
     context['previous_blog']=Blog.objects.filter(create_time__gt=blog.create_time).last()
