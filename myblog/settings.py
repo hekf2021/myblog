@@ -133,3 +133,10 @@ MEDIA_URL='/media/'
 MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 #配置ckeditor 图片上传路径
 CKEDITOR_UPLOAD_PATH='upload/'
+#缓存设置 创建缓存用命令 python manage.py createcachetable
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'my_cache_table',
+    }
+}
