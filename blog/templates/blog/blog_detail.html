@@ -41,22 +41,42 @@
         </div>
         <div class="row">
             <div class="col-md-12 col-md-offset-1 col-lg-offset-0" >
-                <div style="margin-top: 2em;border: 1px dashed;padding: 2em">
-                    提交评论区
+                <div class="comment-area">
+                    <h3 class="comment-area-title">提交评论区</h3>
                     {% if user.is_authenticated %}
-                        已登陆
+                         <form action="{% url 'update_comment' %}"  method="post" style="overflow: hidden">
+                            {% csrf_token %}
+                             <div class="form-group">
+                                 <label for="comment_text">{{ user.username }},欢迎评论</label>
+                                 <textarea id="comment_text" class="form-control" name="text" rows="6"></textarea>
+                              </div>
+                             <input type="hidden" name="object_id" value="{{ blog.pk }}"/>
+                             <input type="hidden" name="content_type" value="blog"/>
+                             <input type="submit" value="评论" class="btn btn-primary" style="float:right"/>
+                        </form>
                     {% else %}
-                        未登陆
+                        未登陆,登陆之后方可评论
                         <form action="{% url 'login' %}" method="post">
                             {% csrf_token %}
-                            <input type="text" name="username"/>
-                            <input type="password" name="password"/>
+                            <span>用户名</span><input type="text" name="username"/>
+                            <span>密码：</span><input type="password" name="password"/>
                             <input type="submit" value="登陆"/>
                         </form>
                     {% endif %}
 
                 </div>
-                <div style="margin-top: 2em;border: 1px dashed;padding: 2em">评论列表区域</div>
+                <div class="comment-area">
+                    <h3 class="comment-area-title">评论列表区域</h3>
+                    {% for comment in comments %}
+                        <div>
+                            {{ comment.user.username }}
+                            {{ comment.comment_time|date:"Y-m-d H:m:s" }}
+                            {{ comment.text }}
+                        </div>
+                    {% empty %}
+                        暂无评论
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>
